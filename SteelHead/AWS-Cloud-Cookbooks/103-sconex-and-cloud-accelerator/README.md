@@ -53,7 +53,7 @@ Click Next to go to Specify stack details, where you must assign values to the t
 
 Click Next to change any other configuration parameters. When finished, click Create Stack.
 
-The full deployment takes up to 15 minutes. When the stack successfully completes launching, new Cloud Accelerator and SteelConnect EX FlexVNF instances will be running.
+The full deployment takes up to 5 minutes. When the stack successfully completes launching, new Cloud Accelerator and SteelConnect EX FlexVNF instances will be running.
 
 ## Post-deployment Steps
 
