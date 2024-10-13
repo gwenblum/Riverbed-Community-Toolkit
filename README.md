@@ -13,7 +13,7 @@ A public toolkit shared by [Riverbed](https://www.riverbed.com) and the [Riverbe
 | [AppResponse](/AppResponse) | Cloud Cookbooks for Azure. Ansible playbook example based on [SteelScript Python Library](https://github.com/riverbed/steelscript)| Ansible, Python, REST API |
 | [NetProfiler](/NetProfiler) | Deploy the Netprofiler with Terraform template in the Azure Cloud. Ansible playbook example based on [SteelScript Python Library](https://github.com/riverbed/steelscript)| Ansible, Terraform |
 | [SteelConnect](/SteelConnect) | Scripts, howtos and templates to deploy SteelConnect headend in Azure | Azure, Terraform, PowerShell |
-| [SteelScript](#) | *work in progress* Examples and use-cases based on [SteelScript Python Library](https://github.com/riverbed/steelscript) | Python |
+| [SteelScript](/SteelScript) | Examples and cookbook based on [SteelScript Python Library](https://github.com/riverbed/steelscript) | Python, Jupyter Notebook |
 
 
 
