@@ -2,7 +2,7 @@
 
 [Riverbed SteelScript](https://github.com/riverbed/steelscript) is an opensource collection of libraries and scripts written in Python for interacting with Riverbed solutions and appliances, and other network infrastructure devices. 
 
-This page contains cookbook based on SteelScript.
+This page contains some cookbooks based on SteelScript.
 
 ## Contents
 
