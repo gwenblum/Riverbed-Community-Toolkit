@@ -8,9 +8,7 @@ This page contains cookbook based on SteelScript.
 
 | ID | Description | Tags | Last update |
 | --- | --- | --- | --- | 
-| [101](101-steelscript-notebook-template/steelscript-notebook-template.ipynb) | Jupyter Notebook | oct. 2024
-
-
+| [101](101-steelscript-notebook-template/steelscript-notebook-template.ipynb) | Template of a SteelScript Notebook | Jupyter Notebook | oct. 2024 |
 
 ### Contribute
 
