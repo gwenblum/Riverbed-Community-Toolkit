@@ -45,7 +45,7 @@ MariaDB [endpointtracker]> desc endpoints;
 
 To customize the configuration, you can make a copy of file [TEMPLATE.env](TEMPLATE.env) to `.env`, and then edit .env to put your own values.
 
-> [! NOTE]
+> [!NOTE]
 > It may be necessary to change the ip range used for the virtual network in case it conflicts with existing network allocations. The default 172.18.0.0/24 (see [TEMPLATE.env](TEMPLATE.env))
 
 Then starting the `docker compose` process will build the image, create a virtual network and create the containers, as per defined in the manifest file [compose.yaml](compose.yaml), 
