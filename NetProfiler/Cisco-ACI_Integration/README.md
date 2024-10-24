@@ -39,9 +39,9 @@ MariaDB [endpointtracker]> desc endpoints;
 +-----------+-----------+------+-----+---------------------+-------------------------------+
 ```
 
-## Quick start
+## Step by Step
 
-### Configure and run docker compose
+### Step 1. Configure and run docker compose
 
 Make a copy of the file [TEMPLATE.env](TEMPLATE.env). You need to name it `.env` (so that docker compose can pick it up).
 
@@ -73,7 +73,7 @@ When started, the 3 containers will run indefinitely, until you stop them. To st
 docker compose down -d
 ```
 
-### From rctc-acitoolkit, store the endpoints information to the database
+### Step 2. From rctc-acitoolkit, store the endpoints information to the database
 
 The image of `rctc-acitoolkit` contains a slightly modified version of the original script `aci-endpoint-tracker.py` from the original `acitoolkit`. It fixes a couple of issues and adds a "one-off" option to force the script to execute one scan of ACI, export endpoint data into MySQL and then exit rather than running perpetually updating the database as the ACI system changes.
 
@@ -83,7 +83,7 @@ The following command connects to the running `rctc-acitoolkit` container to exe
 docker exec -it rctc-acitoolkit python acitoolkit/applications/endpointtracker/aci-endpoint-tracker.py -o
 ```
 
-### From rctc-steelscript-ansible container, check the DB is reachable and populated
+### Step 3. From rctc-steelscript-ansible container, check the DB is reachable and populated
 
 The following command will connect to the `rctc-steelscript-ansible` container and run a SQL statement to verify that the database exists and is now populated:
 
@@ -91,7 +91,7 @@ The following command will connect to the `rctc-steelscript-ansible` container a
 docker exec -it rctc-steelscript-ansible mysql -u root -ppassword -h mysql endpointtracker -e 'select * from endpoints limit 10;'
 ```
 
-### Configure the connector to Riverbed NetProfiler and/or AppResponse, and apply
+### Step 4. Configure the connector to Riverbed NetProfiler and/or AppResponse, and apply
 
 #### NetProfiler
 
@@ -128,37 +128,7 @@ Run the ansible playbook for **AppResponse** from inside the `rctc-steelscript-a
 docker exec rctc-steelscript-ansible ansible-playbook -vvv ar11-create-hostgroups.yml
 ```
 
-## Other notes and commands
-
-### Build manually
-
-You can build the container images manually. Each image has its own Dockerfile: [steelscript-ansible](Dockerfile.steelscript-ansible), [acitoolkit](Dockerfile.acitoolkit).
-
-To build, run the following commands:
-
-```shell
-docker build -t steelscript-ansible:latest -f Dockerfile.steelscript-ansible .
-
-docker build -t acitoolkit:latest -f Dockerfile.acitoolkit .
-```
-
-Then you can list the images on your host to verify the images `rctc-steelscript-ansible` and `rctc-acitoolkit` are there:
-
-```shell
-docker images rctc*
-```
-
-### Modify the compose file
-
-Some prefer hardcoding secret and password in cleartext in the compose. It is not recommended but you can do it. 
-In the [compose](compose.yaml), for example you can hard-code the value of the environment variables APIC_URL, APIC_LOGIN and APIC_PASSWORD:
-
-```yaml
-   environment:
-      - APIC_URL=https://myapic.url
-      - APIC_LOGIN=my_admin_login
-      - APIC_PASSWORD=my_password
-```
+## Notes
 
 ### Running in Production
 
@@ -223,6 +193,36 @@ optional arguments:
   --kill                if run as a process, kill it
   --restart             if run as a process, restart it
   -o, --oneoff          Run one pass only and exit
+```
+
+### Build manually
+
+You can build the container images manually. Each image has its own Dockerfile: [steelscript-ansible](Dockerfile.steelscript-ansible), [acitoolkit](Dockerfile.acitoolkit).
+
+To build, run the following commands:
+
+```shell
+docker build -t steelscript-ansible:latest -f Dockerfile.steelscript-ansible .
+
+docker build -t acitoolkit:latest -f Dockerfile.acitoolkit .
+```
+
+Then you can list the images on your host to verify the images `rctc-steelscript-ansible` and `rctc-acitoolkit` are there:
+
+```shell
+docker images rctc*
+```
+
+### Modify the compose file
+
+Some prefer hardcoding secret and password in cleartext in the compose. It is not recommended but you can do it. 
+In the [compose](compose.yaml), for example you can hard-code the value of the environment variables APIC_URL, APIC_LOGIN and APIC_PASSWORD:
+
+```yaml
+   environment:
+      - APIC_URL=https://myapic.url
+      - APIC_LOGIN=my_admin_login
+      - APIC_PASSWORD=my_password
 ```
 
 ## License
