@@ -22,7 +22,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     networks:
       rctc_net:
-        ipv4_address: ${IP_ADDRESS_MYSQL}
+        ipv4_address: ${RCTC_SUBNET_IP_ADDRESS_MYSQL}
 
   aci:
     depends_on:
@@ -35,13 +35,11 @@ services:
       - APIC_URL=${APIC_URL}
       - APIC_LOGIN=${APIC_LOGIN}
       - APIC_PASSWORD=${APIC_PASSWORD}
-
-      - APIC_MYSQLIP=${IP_ADDRESS_MYSQL}
+      - APIC_MYSQLIP=${RCTC_SUBNET_IP_ADDRESS_MYSQL}
       - APIC_MYSQLLOGIN=root
       - APIC_MYSQLPASSWORD=${MYSQL_ROOT_PASSWORD}
     networks:
       rctc_net:
-        ipv4_address: ${IP_ADDRESS_ACI}
 
   steelscript-ansible:
     image: rctc-steelscript-ansible
@@ -52,4 +50,3 @@ services:
       - ./app:/app
     networks:
       rctc_net:
-        ipv4_address: ${IP_ADDRESS_STEELSCRIPT_ANSIBLE}
