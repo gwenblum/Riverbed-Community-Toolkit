@@ -41,7 +41,7 @@ MariaDB [endpointtracker]> desc endpoints;
 
 ## Step by Step
 
-### Step 1. Configure and run docker compose
+### Step 1. Configure then environment and run docker compose
 
 Make a copy of the file [TEMPLATE.env](TEMPLATE.env). You need to name it `.env` (so that docker compose can pick it up).
 
