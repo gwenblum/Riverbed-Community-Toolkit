@@ -93,7 +93,7 @@ docker exec -it rctc-steelscript-ansible mysql -u root -ppassword -h mysql endpo
 
 ### Step 4. Configure the connector to Riverbed NetProfiler and/or AppResponse, and apply
 
-#### NetProfiler
+#### 4.1 NetProfiler
 
 For **Netprofiler**, edit the file [app/create-hostgroups.yml](app/create-hostgroups.yml) and customize the NetProfiler details for your environment. For example:
 
@@ -102,7 +102,9 @@ For **Netprofiler**, edit the file [app/create-hostgroups.yml](app/create-hostgr
     host: "NetProfiler IPv4 address"
     access_code: "Oauth access code"
     tenant: "myTenant"
-    mysql_pass: "same value set for MYSQL_ROOT_PASSWORD in .env"
+
+    mysql_host: "set same value as RCTC_SUBNET_IP_ADDRESS_MYSQL in .env"
+    mysql_pass: "set same value as MYSQL_ROOT_PASSWORD in .env"
 ```
 
 Then apply, running the ansible playbook for **NetProfiler** from inside the `rctc-steelscript-ansible`
@@ -111,7 +113,7 @@ Then apply, running the ansible playbook for **NetProfiler** from inside the `rc
 docker exec rctc-steelscript-ansible ansible-playbook -vvv np-create-hostgroups.yml
 ```
 
-#### AppResponse
+#### 4.2 AppResponse
 
 If the **AppResponse** integration is being used, modify the [app/ar11-create-hostgroups.yml](app/ar11-create-hostgroups.yml) file with the AppResponse details for your environment (note that the AR11 integration uses password authentication rather than OAUTH).
 
@@ -121,7 +123,9 @@ If the **AppResponse** integration is being used, modify the [app/ar11-create-ho
     user: "user name for a user with admin privileges"
     password: "password for above user"
     tenant: "myTenant"
-    mysql_pass: "same value set for MYSQL_ROOT_PASSWORD in .env"
+
+    mysql_host: "set same value as RCTC_SUBNET_IP_ADDRESS_MYSQL in .env"
+    mysql_pass: "set same value as MYSQL_ROOT_PASSWORD in .env"
 ```
 
 Run the ansible playbook for **AppResponse** from inside the `rctc-steelscript-ansible`
