@@ -102,8 +102,7 @@ For **Netprofiler**, edit the file [app/create-hostgroups.yml](app/create-hostgr
     host: "NetProfiler IPv4 address"
     access_code: "Oauth access code"
     tenant: "myTenant"
-
-    mysql_pass: "root password same as in .env"
+    mysql_pass: "same value set for MYSQL_ROOT_PASSWORD in .env"
 ```
 
 Then apply, running the ansible playbook for **NetProfiler** from inside the `rctc-steelscript-ansible`
@@ -122,8 +121,7 @@ If the **AppResponse** integration is being used, modify the [app/ar11-create-ho
     user: "user name for a user with admin privileges"
     password: "password for above user"
     tenant: "myTenant"
-
-    mysql_pass: "root password same as in .env"
+    mysql_pass: "same value set for MYSQL_ROOT_PASSWORD in .env"
 ```
 
 Run the ansible playbook for **AppResponse** from inside the `rctc-steelscript-ansible`
