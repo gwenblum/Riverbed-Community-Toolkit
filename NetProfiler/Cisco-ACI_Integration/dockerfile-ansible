@@ -1,23 +1,21 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 LABEL org.opencontainers.image.authors="Riverbed Community"
 LABEL org.opencontainers.image.source="https://github.com/riverbed/Riverbed-Community-Toolkit"
 
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends -y tzdata
-RUN apt-get install --no-install-recommends -y python3 python3-pip python3-paramiko ansible mysql-client git
-
-# TODO: check if the apt-get install below is necessary or remove
-# RUN apt-get install --no-install-recommends -y sshpass ssh vim telnet curl iputils-ping software-properties-common build-essential python3-dev
+RUN apt-get install --no-install-recommends -y python3 python3-pip ansible git
+RUN apt-get autoremove && apt-get clean && apt-get autoclean && rm -rf /var/lib/apt/lists/*
     
 RUN mkdir /etc/ansible
 RUN echo "localhost" >> /etc/ansible/hosts
-RUN pip install mysql-connector-python
+RUN pip install --break-system-packages mysql-connector-python
 
 # Install SteelScript and modules (latest version)
 # ref: https://github.com/riverbed/steelscript > Quickstart
-RUN pip install git+https://github.com/riverbed/steelscript
-RUN pip install git+https://github.com/riverbed/steelscript-appresponse
-RUN pip install git+https://github.com/riverbed/steelscript-netprofiler
+RUN pip install --break-system-packages \
+    git+https://github.com/riverbed/steelscript \
+    git+https://github.com/riverbed/steelscript-appresponse \
+    git+https://github.com/riverbed/steelscript-netprofiler 
 
 # Create Ansible modules from the scripts inside modules subfolder 
 COPY ./modules/*.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
