@@ -1,4 +1,6 @@
-## Riverbed NPM integration with Cisco ACI - mapping ACI EPGs to Host Groups in Riverbed NetProfiler and Riverbed AppResponse
+# Riverbed NPM integration with Cisco ACI 
+
+Mapping ACI EPGs to Host Groups in Riverbed NetProfiler and Riverbed AppResponse
 
 The following cookbook contains a description of a workflow on how to create Host Groups in **Riverbed NetProfiler** based on the endpoint groups defined within a **Cisco ACI** instance. The mechanism has been extended to include the ability to create and update Host Groups in an **Riverbed AppResponse** instance within the same framework.
 
