@@ -1,3 +1,8 @@
+# Dockerfile.acitoolkit
+# version 24.10.25
+#
+# Riverbed Community Toolkit, https://github.com/riverbed/Riverbed-Community-Toolkit 
+
 FROM dockercisco/acitoolkit
 
 WORKDIR /opt
@@ -12,4 +17,4 @@ RUN pip install protobuf==3.18.0 && pip install mysql-connector-python==8.0.21
 RUN cd /opt/acitoolkit/applications/endpointtracker && \
     patch -b < /tmp/aci-endpoint-tracker.patch
 
-CMD ["sleep infinity"]
+CMD ["sleep","infinity"]

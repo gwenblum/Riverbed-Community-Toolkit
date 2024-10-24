@@ -1,0 +1,55 @@
+# compose.yaml
+# version 24.10.25
+#
+# Riverbed Community Toolkit, https://github.com/riverbed/Riverbed-Community-Toolkit 
+
+
+
+networks:
+  rctc_net:
+    ipam:
+      config:
+        - subnet: ${RCTC_SUBNET_CIDR}
+
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: rctc-mysql_db
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+      rctc_net:
+        ipv4_address: ${IP_ADDRESS_MYSQL}
+
+  aci:
+    depends_on:
+      - mysql
+    image: rctc-acitoolkit
+    build:
+      dockerfile: Dockerfile.acitoolkit
+    container_name: rctc-acitoolkit
+    environment:
+      - APIC_URL=${APIC_URL}
+      - APIC_LOGIN=${APIC_LOGIN}
+      - APIC_PASSWORD=${APIC_PASSWORD}
+
+      - APIC_MYSQLIP=${IP_ADDRESS_MYSQL}
+      - APIC_MYSQLLOGIN=root
+      - APIC_MYSQLPASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+      rctc_net:
+        ipv4_address: ${IP_ADDRESS_ACI}
+
+  steelscript-ansible:
+    image: rctc-steelscript-ansible
+    build:
+      dockerfile: Dockerfile.steelscript-ansible   
+    container_name: rctc-steelscript-ansible
+    volumes:
+      - ./app:/app
+    networks:
+      rctc_net:
+        ipv4_address: ${IP_ADDRESS_STEELSCRIPT_ANSIBLE}

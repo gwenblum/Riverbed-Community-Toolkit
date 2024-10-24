@@ -1,21 +1,24 @@
-## NetProfiler Cisco ACI integration - mapping ACI EPGs to NetProfiler Host Groups
-The following cookbook contains a description of a workflow on how to create **NetProfiler** Host Groups based on the endpoint groups defined within a **Cisco ACI** instance. The mechanism has now been extended to include the ability to create and update Host Groups in an **AppResponse** instance within the same framework.
+## Riverbed NPM integration with Cisco ACI - mapping ACI EPGs to Host Groups in Riverbed NetProfiler and Riverbed AppResponse
+
+The following cookbook contains a description of a workflow on how to create Host Groups in **Riverbed NetProfiler** based on the endpoint groups defined within a **Cisco ACI** instance. The mechanism has been extended to include the ability to create and update Host Groups in an **Riverbed AppResponse** instance within the same framework.
 
 ## Workflow overview
 
 <img src="images/workflows.png" width="50%"/>
 
 ## Prerequisites
+
 1. A host with Docker installed, e.g. a Linux host, and sufficient access to create and run Docker containers
-2. A NetProfiler instance with OAuth credentials available for a user able to create and modify Host Groups (created via Administration > OAuth Access)
+2. A NetProfiler instance with OAuth code credentials available for a user able to create and modify Host Groups (created via Administration > OAuth Access)
 3. And/or an instances of AppResponse with credentials for a user able to manage Host Group definitions
 4. Access to the source Cisco ACI APIC with suitable credentials
 
 ## Workflow description
+
 The workflow represented above consists of the following parts:  
 1. Docker container which runs the [Cisco ACI toolkit](https://developer.cisco.com/codeexchange/github/repo/datacenter/acitoolkit). 
 2. Docker container which runs [MySQL](https://www.mysql.com) server.
-2. Docker container which runs [Ansible](https://www.ansible.com/) and SteelScript which is used to configure the NetProfiler and/or AppResponse instances.
+2. Docker container which runs [Ansible](https://www.ansible.com/) and [SteelScript](https://github.com/riverbed/steelscript) which is used to configure the NetProfiler and/or AppResponse instances.
 
 The Cisco ACI toolkit contains a script [aci_endpointtracker](https://acitoolkit.readthedocs.io/en/latest/endpointtracker.html) which extracts all the endpoints from an indicated Tenant and stores them into a MySQL table (endpoints) with the following structure:
 ```
@@ -34,62 +37,82 @@ MariaDB [endpointtracker]> desc endpoints;
 +-----------+-----------+------+-----+---------------------+-------------------------------+
 ```
 
-## Setting up
-Before starting the [docker-compose](docker-compose-final.yml) process, the custom Ansible and Cisco ACI Toolkit container images need to be built using the following docker-files: [dockerfile-ansible](dockerfile-ansible), [dockerfile-acitoolkit](dockerfile-acitoolkit).
-```
-docker build -t m_ansible:aci -f dockerfile-ansible .
-docker build -t acitoolkit:rvbd -f dockerfile-acitoolkit .
-```
-Verify that the container image is now existing:
-```
-docker images m_ansible:aci
-docker images acitoolkit:rvbd
-```
-Modify the docker-compose file environment variables APIC_URL, APIC_LOGIN and APIC_PASSWORD to the working values for the target Cisco APIC instance:
-```
-   environment:
-      - APIC_URL=https://myapic.url
-      - APIC_LOGIN=admin
-      - APIC_PASSWORD=mysecret_password
-```
-It may also be necessary to change the default network (172.18.0.0/24) used if this conflicts with existing network allocations - any such changes will require changes to the various YML files and to commands shown below.
+## Quick start
 
-Start the `docker compose` process to create the containers:
-```
-docker compose -f docker-compose-final.yml up -d
-```
-Verify that all 3 containers are up and running:
-```
-docker ps -a                     
-CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                 NAMES
-c44e76fe01c9   acitoolkit:rvbd          "sleep infinity"         32 seconds ago   Up 31 seconds                         acitoolkit
-008a14bc3c98   m_ansible:aci            "sleep infinity"         32 seconds ago   Up 31 seconds                         ansible
-dc237249a07a   mysql:latest             "docker-entrypoint.s…"   32 seconds ago   Up 31 seconds   3306/tcp, 33060/tcp   mysql_db
-```
-Note that a slightly modified version of the `aci-endpoint-tracker.py` script is created in the `acitoolkit` container which fixes a couple of issues and adds a "one-off" option to force the script to execute one scan of ACI, export endpoint data into MySQL and then exit rather than running perpetually updating the database as the ACI system changes.
+### Configure and run docker compose
 
-Connect to the `acitoolkit` container and execute the Python script that gets the endpoint information and writes it in to the MySQL database:
+To customize the configuration, you can make a copy of file [TEMPLATE.env](TEMPLATE.env) to `.env`, and then edit .env to put your own values.
+
+> [! NOTE]
+> It may be necessary to change the ip range used for the virtual network in case it conflicts with existing network allocations. The default 172.18.0.0/24 (see [TEMPLATE.env](TEMPLATE.env))
+
+Then starting the `docker compose` process will build the image, create a virtual network and create the containers, as per defined in the manifest file [compose.yaml](compose.yaml), 
+
+```shell
+docker compose up -d
 ```
-docker exec -ti acitoolkit /bin/bash
-cd acitoolkit/applications/endpointtracker/
-python aci-endpoint-tracker.py -o
+
+You can verify that all 3 containers are up and running:
+
+```shell
+docker ps -a
 ```
-Disconnect from the `acitoolkit` container and connect to the `ansible` container to verify that the database exists and is now populated:
+
+```log
+CONTAINER ID   IMAGE                      COMMAND                  CREATED          STATUS                        PORTS     NAMES
+f392b621590e   rctc-acitoolkit            "/bin/sh -c 'sleep i…"   13 minutes ago   Exited (137) 13 minutes ago             rctc-acitoolkit
+ed4a3638af4c   mysql:8.0                  "docker-entrypoint.s…"   13 minutes ago   Exited (137) 13 minutes ago             rctc-mysql_db
+35b3f417cdb9   rctc-steelscript-ansible   "/bin/sh -c 'sleep i…"   13 minutes ago   Exited (137) 13 minutes ago             rctc-steelscript-ansible
 ```
-docker exec -ti ansible /bin/bash
-mysql -u root -ppassword -h 172.18.0.3 endpointtracker
-select * from endpoints limit 10;
-exit
+
+When started, the 3 containers will run indefinitely, until you stop them. To stop, run the following:
+
+```shell
+docker compose down -d
 ```
-Disconnect from the `ansible` container and modify the [app/create-hostgroups.yml](app/create-hostgroups.yml) file with the NetProfiler details for your environment:
+
+### From rctc-acitoolkit, store the endpoints information to the database
+
+The image of `rctc-acitoolkit` contains a slightly modified version of the original script `aci-endpoint-tracker.py` from the original `acitoolkit`. It fixes a couple of issues and adds a "one-off" option to force the script to execute one scan of ACI, export endpoint data into MySQL and then exit rather than running perpetually updating the database as the ACI system changes.
+
+The following command connects to the running `rctc-acitoolkit` container to execute the Python script that gets the endpoint information and writes it in to the MySQL database:
+
+```shell
+docker exec -it rctc-acitoolkit python acitoolkit/applications/endpointtracker/aci-endpoint-tracker.py -o
 ```
+
+### From rctc-steelscript-ansible container, check the DB is reachable and populated
+
+The following command will connect to the `rctc-steelscript-ansible` container and run a SQL statement to verify that the database exists and is now populated:
+
+```shell
+docker exec -it rctc-steelscript-ansible mysql -u root -ppassword -h mysql endpointtracker -e 'select * from endpoints limit 10;'
+```
+
+### Configure the connector to Riverbed NetProfiler and/or AppResponse, and apply
+
+#### NetProfiler
+
+For **Netprofiler**, edit the file [app/create-hostgroups.yml](app/create-hostgroups.yml) and customize the NetProfiler details for your environment. For example:
+
+```yaml
   vars:
     host: "NetProfiler IPv4 address"
     access_code: "Oauth access code"
     tenant: "myTenant"
 ```
-If the AppResponse integration is being used, modify the [app/ar11-create-hostgroups.yml](app/ar11-create-hostgroups.yml) file with the AppResponse details for your environment (note that the AR11 integration uses password authentication rather than OAUTH):
+
+Then apply, running the ansible playbook for **NetProfiler** from inside the `rctc-steelscript-ansible`
+
+```shell
+docker exec rctc-steelscript-ansible ansible-playbook -vvv np-create-hostgroups.yml
 ```
+
+#### AppResponse
+
+If the **AppResponse** integration is being used, modify the [app/ar11-create-hostgroups.yml](app/ar11-create-hostgroups.yml) file with the AppResponse details for your environment (note that the AR11 integration uses password authentication rather than OAUTH):
+
+```yaml
   vars:
     host: "AppResponse IPv4 address"
     user: "user name for a user with admin privileges"
@@ -97,14 +120,48 @@ If the AppResponse integration is being used, modify the [app/ar11-create-hostgr
     tenant: "myTenant"
 ```
 
-Now reconnect to the `ansible` container and run `ansible-playbook` using the above file(s):
+Run the ansible playbook for **AppResponse** from inside the `rctc-steelscript-ansible`
+
+```shell
+docker exec rctc-steelscript-ansible ansible-playbook -vvv ar11-create-hostgroups.yml
 ```
-docker exec -ti ansible /bin/bash
-ansible-playbook -vvv create-hostgroups.yml
-ansible-playbook -vvv ar11-create-hostgroups.yml
+
+## Other notes and commands
+
+### Build manually
+
+You can build the container images manually. Each image has its own Dockerfile: [steelscript-ansible](Dockerfile.steelscript-ansible), [acitoolkit](Dockerfile.acitoolkit).
+
+To build, run the following commands:
+
+```shell
+docker build -t steelscript-ansible:latest -f Dockerfile.steelscript-ansible .
+
+docker build -t acitoolkit:latest -f Dockerfile.acitoolkit .
 ```
-## Running in Production
+
+Then you can list the images on your host to verify the images `rctc-steelscript-ansible` and `rctc-acitoolkit` are there:
+
+```shell
+docker images rctc*
+```
+
+### Modify the compose file
+
+Some prefer hardcoding secret and password in cleartext in the compose. It is not recommended but you can do it. 
+In the [compose](compose.yaml), for example you can hard-code the value of the environment variables APIC_URL, APIC_LOGIN and APIC_PASSWORD:
+
+```yaml
+   environment:
+      - APIC_URL=https://myapic.url
+      - APIC_LOGIN=my_admin_login
+      - APIC_PASSWORD=my_password
+```
+
+### Running in Production
+
 The ACI script can be run in one-off mode or in daemon mode. In one-off mode, the script pulls the endpoint data from the APIC and adds the entries matching the specified Tenant to the MySQL database.
+
 If an endpoint entry already exists (matching MAC address) then the existing entry is updated to capture any changed details. Without one-off mode (default is now one-off mode) the application will keep running, listening for APIC events and updating the database accordingly.
 In daemon mode, the application puts itself into the background.
 
@@ -114,20 +171,24 @@ For deployment, one could run the script chain from a cronjob or cronjobs, e.g. 
 
 It will be necessary to ensure the containers are shutdown cleanly when the system is shutdown and restarted when the system boots.
 
-## Limitations
+### Limitations
+
 1. The current model only handles one Cisco ACI Tenant. The model could be extended to support multiple tenants with separate Host Group Types per Tenant, for instance.
 2. The mechanism only supports creating Host Groups in one NetProfiler and/or one AppResponse; it should support multiple instances of AppResponse at least and also support Portal as this can be used to manage HG definitions across multiple AppResponse instances.
 
-## Troubleshooting
+### Troubleshooting
+
 1. Make sure that the containers are up and running
 2. Make sure there really are endpoints defined in the APIC for the scripts to discover (the Cisco ACI sandbox is often empty!)
 2. Make sure the access information and credentials are correct for the APIC
 3. Make sure the access information and credentials are correct for the NetProfiler and/or AppResponse - note that the OAuth tokens expire so will need renewing at some point
 4. If there are Python errors make sure that nothing is installed that is not compatible with the old version of Python used by the ACI toolkit (Python version 2.7)
 
-## Reference
+### Reference
+
 The [aci-endpoint-tracker](acitoolkit/applications/endpointtracker/aci-endpoint-tracker.py) script provides the following online help:
-```
+
+```shell
 root@2085cd500c8a:/opt/acitoolkit/applications/endpointtracker# python aci-endpoint-tracker.py --help
 usage: aci-endpoint-tracker.py [-h] [-u URL] [-l LOGIN] [-p PASSWORD]
                                [--cert-name CERT_NAME] [--key KEY]
@@ -161,7 +222,9 @@ optional arguments:
   --restart             if run as a process, restart it
   -o, --oneoff          Run one pass only and exit
 ```
+
 ## License
+
 Copyright (c) 2021-2024 Riverbed Technology, Inc.
 
 The scripts provided here are licensed under the terms and conditions of the MIT License accompanying the software ("License"). The scripts are distributed "AS IS" as set forth in the License. The script also include certain third party code. All such third party code is also distributed "AS IS" and is licensed by the respective copyright holders under the applicable terms and conditions (including, without limitation, warranty and liability disclaimers) identified in the license notices accompanying the software.
