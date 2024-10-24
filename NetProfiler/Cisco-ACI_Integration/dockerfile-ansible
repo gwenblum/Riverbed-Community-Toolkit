@@ -1,24 +1,26 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+LABEL org.opencontainers.image.authors="Riverbed Community"
+LABEL org.opencontainers.image.source="https://github.com/riverbed/Riverbed-Community-Toolkit"
 
-RUN apt-get update && apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y software-properties-common && \
-    apt-get install --no-install-recommends -y python3-pip build-essential python3-dev && \
-    apt-get install --no-install-recommends -y ansible python3-paramiko sshpass ssh && \
-    apt-get install --no-install-recommends -y vim telnet curl iputils-ping && \
-    apt-get install --no-install-recommends -y mysql-client
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends -y tzdata
+RUN apt-get install --no-install-recommends -y python3 python3-pip python3-paramiko ansible mysql-client git
 
-RUN pip3 install steelscript
-RUN pip3 install steelscript.appresponse
-RUN pip3 install mysql-connector-python
-
+# TODO: check if the apt-get install below is necessary or remove
+# RUN apt-get install --no-install-recommends -y sshpass ssh vim telnet curl iputils-ping software-properties-common build-essential python3-dev
+    
+RUN mkdir /etc/ansible
 RUN echo "localhost" >> /etc/ansible/hosts
+RUN pip install mysql-connector-python
 
-RUN mkdir /usr/lib/python3/dist-packages/ansible/modules/riverbed/
-COPY ./modules/service.py /usr/local/lib/python3.8/dist-packages/steelscript/common/
-COPY ./modules/create_hostgroup_from_json.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
-COPY ./modules/update_hostgroup_from_json.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
-COPY ./modules/host_group_upload.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
-COPY ./modules/aci_mysql*.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
+# Install SteelScript and modules (latest version)
+# ref: https://github.com/riverbed/steelscript > Quickstart
+RUN pip install git+https://github.com/riverbed/steelscript
+RUN pip install git+https://github.com/riverbed/steelscript-appresponse
+RUN pip install git+https://github.com/riverbed/steelscript-netprofiler
+
+# Create Ansible modules from the scripts inside modules subfolder 
+COPY ./modules/*.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
 
 WORKDIR /app
 
