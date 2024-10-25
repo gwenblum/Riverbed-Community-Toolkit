@@ -12,7 +12,7 @@ RUN apt-get autoremove && apt-get clean && apt-get autoclean && rm -rf /var/lib/
 
 RUN pip install --no-cache-dir mysql-connector-python ansible-core
 
-# TODO: check if the 2 lines below are necessary or delete
+# Configure ansible
 RUN mkdir /etc/ansible
 RUN echo "localhost" >> /etc/ansible/hosts
 
