@@ -75,8 +75,6 @@ class NetprofilerCLIApp(Application):
     def main(self,module):
 
         try:
-            netprofiler = Service("netprofiler",self._host, auth=OAuth(self._access_code),supports_auth_basic=False,supports_auth_oauth=True)
-
             netprofiler = Service("netprofiler",self.host, auth=OAuth(self.access_code),
                                   enable_auth_detection = False,
                                   supports_auth_basic=True,
