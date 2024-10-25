@@ -45,6 +45,10 @@ MariaDB [endpointtracker]> desc endpoints;
 
 Make a copy of the file [TEMPLATE.env](TEMPLATE.env). You need to name it `.env` (so that docker compose can pick it up).
 
+```shell
+cp TEMPLATE.env .env
+```
+
 > [!NOTE]
 > The .env contains the configuration that you can customize with your own values (e.g. username, passwords, ip addresses, ranges, etc.). For example, in the case the virtual network conflicts with an existing network, you can change it. The default ip range for the virtual network is 172.18.0.0/24 (see [TEMPLATE.env](TEMPLATE.env))
 
