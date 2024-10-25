@@ -77,6 +77,12 @@ class NetprofilerCLIApp(Application):
         try:
             netprofiler = Service("netprofiler",self._host, auth=OAuth(self._access_code),supports_auth_basic=False,supports_auth_oauth=True)
 
+            netprofiler = Service("netprofiler",self.host, auth=OAuth(self.access_code),
+                                  enable_auth_detection = False,
+                                  supports_auth_basic=True,
+                                  supports_auth_oauth=True,
+                                  override_services_api='/api/common/1.0/services')
+
             hostgroup_id = self.get_hostgroup_id(netprofiler,self.get_hostgroup_name())
 
             contents = open(self._json_file, 'rb').read()
