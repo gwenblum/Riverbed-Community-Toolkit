@@ -10,20 +10,17 @@ LABEL org.opencontainers.image.source="https://github.com/riverbed/Riverbed-Comm
 RUN apt-get update && apt-get install --no-install-recommends -y git default-mysql-client
 RUN apt-get autoremove && apt-get clean && apt-get autoclean && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir mysql-connector-python ansible
-
-# Configure ansible
-RUN mkdir /etc/ansible
-RUN echo "localhost" >> /etc/ansible/hosts
+RUN pip install --no-cache-dir mysql-connector-python ansible-core
 
 # Install SteelScript and modules (latest version)
 # ref: https://github.com/riverbed/steelscript > Quickstart
-RUN pip install --no-cache-dir git+https://github.com/riverbed/steelscript
-RUN pip install --no-cache-dir git+https://github.com/riverbed/steelscript-appresponse
-RUN pip install --no-cache-dir git+https://github.com/riverbed/steelscript-netprofiler 
+RUN pip install --no-cache-dir \
+    git+https://github.com/riverbed/steelscript \
+    git+https://github.com/riverbed/steelscript-appresponse \
+    git+https://github.com/riverbed/steelscript-netprofiler 
 
 # Create Ansible modules from the scripts inside modules subfolder 
-COPY ./modules/*.py /usr/lib/python3/dist-packages/ansible/modules/riverbed/
+COPY ./modules/*.py /usr/share/ansible/plugins/modules/riverbed/
 
 WORKDIR /app
 
