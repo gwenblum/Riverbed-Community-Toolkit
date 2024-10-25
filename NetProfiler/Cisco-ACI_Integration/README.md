@@ -105,7 +105,7 @@ docker exec rctc-steelscript-ansible mysql -u root -ppassword -h mysql endpointt
 
 #### 4.1 NetProfiler
 
-For **Netprofiler**, edit the file [app/create-hostgroups.yml](app/create-hostgroups.yml) and customize the NetProfiler details for your environment. For example:
+For **Netprofiler**, edit the file [app/np-create-hostgroups.yml](app/np-create-hostgroups.yml) and customize the NetProfiler details for your environment. For example:
 
 ```yaml
   vars:
