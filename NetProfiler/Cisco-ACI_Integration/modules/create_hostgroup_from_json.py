@@ -61,8 +61,12 @@ class NetprofilerCLIApp(Application):
     def main(self, module):
 
         try:
-            netprofiler = Service("netprofiler",self.host, auth=OAuth(self.access_code),supports_auth_basic=False,supports_auth_oauth=True)
-
+            netprofiler = Service("netprofiler",self.host, auth=OAuth(self.access_code),
+                                  enable_auth_detection = False,
+                                  supports_auth_basic=True,
+                                  supports_auth_oauth=True,
+                                  override_services_api='/api/common/1.0/services')
+            
             contents = open(self.json_file, 'rb').read()
 
             content_dict = netprofiler.conn.upload(self.api_url, contents, extra_headers={'Content-Type': 'application/json'})
