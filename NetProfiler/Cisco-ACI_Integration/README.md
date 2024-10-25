@@ -57,7 +57,7 @@ docker compose up --build --detach
 > [!Note]
 > If the images have already been built you can just run
 > ```shell
-> docker compose up -d
+> docker compose up --detach
 > ```
 
 You can verify that all 3 containers are up and running:
