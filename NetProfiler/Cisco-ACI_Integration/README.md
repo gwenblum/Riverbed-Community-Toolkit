@@ -205,12 +205,12 @@ optional arguments:
 
 You can build the container images manually. Each image has its own Dockerfile: [steelscript-ansible](Dockerfile.steelscript-ansible), [acitoolkit](Dockerfile.acitoolkit).
 
-To build, run the following commands:
+To build manually, run the following commands:
 
 ```shell
-docker build -t steelscript-ansible:latest -f Dockerfile.steelscript-ansible .
+docker build -t rctc-steelscript-ansible:latest -f Dockerfile.steelscript-ansible .
 
-docker build -t acitoolkit:latest -f Dockerfile.acitoolkit .
+docker build -t rctc-acitoolkit:latest -f Dockerfile.acitoolkit .
 ```
 
 Then you can list the images on your host to verify the images `rctc-steelscript-ansible` and `rctc-acitoolkit` are there:
@@ -229,6 +229,7 @@ In the [compose](compose.yaml), for example you can hard-code the value of the e
       - APIC_URL=https://myapic.url
       - APIC_LOGIN=my_admin_login
       - APIC_PASSWORD=my_password
+      ...
 ```
 
 ## License
