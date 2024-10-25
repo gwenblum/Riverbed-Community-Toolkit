@@ -48,11 +48,17 @@ Make a copy of the file [TEMPLATE.env](TEMPLATE.env). You need to name it `.env`
 > [!NOTE]
 > The .env contains the configuration that you can customize with your own values (e.g. username, passwords, ip addresses, ranges, etc.). For example, in the case the virtual network conflicts with an existing network, you can change it. The default ip range for the virtual network is 172.18.0.0/24 (see [TEMPLATE.env](TEMPLATE.env))
 
-Then starting the `docker compose` process will build the image, create a virtual network and create the containers, as per defined in the manifest file [compose.yaml](compose.yaml), 
+Then, starting the `docker compose` process with the command below will build the images, create a virtual network and create and the containers, as per defined in the manifest file [compose.yaml](compose.yaml). The container will run in background (--detach). 
 
 ```shell
-docker compose up -d
+docker compose up --build --detach
 ```
+
+> [!Note]
+> If the images have already been built you can just run
+> ```shell
+> docker compose up -d
+> ```
 
 You can verify that all 3 containers are up and running:
 
