@@ -67,10 +67,10 @@ docker ps -a
 ```
 
 ```log
-CONTAINER ID   IMAGE                      COMMAND                  CREATED          STATUS                        PORTS     NAMES
-f392b621590e   rctc-acitoolkit            "/bin/sh -c 'sleep i…"   13 minutes ago   Exited (137) 13 minutes ago             rctc-acitoolkit
-ed4a3638af4c   mysql:8.0                  "docker-entrypoint.s…"   13 minutes ago   Exited (137) 13 minutes ago             rctc-mysql_db
-35b3f417cdb9   rctc-steelscript-ansible   "/bin/sh -c 'sleep i…"   13 minutes ago   Exited (137) 13 minutes ago             rctc-steelscript-ansible
+CONTAINER ID   IMAGE                      COMMAND                  CREATED         STATUS              PORTS                 NAMES
+b4f8f4cbc292   rctc-steelscript-ansible   "sleep infinity"         2 minutes ago   Up About a minute                         rctc-steelscript-ansible
+db3d1b8a2e17   rctc-acitoolkit            "sleep infinity"         3 minutes ago   Up 3 minutes                              rctc-acitoolkit
+5ea0ee02ee12   mysql:8.0                  "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes        3306/tcp, 33060/tcp   rctc-mysql_db
 ```
 
 When started, the 3 containers will run indefinitely, until you stop them. To stop, run the following:
