@@ -53,18 +53,18 @@ class NetprofilerCLIApp(Application):
 
     def __init__(self, host, code, json_file):
         super(Application).__init__()
-        self._api_url = "/api/profiler/1.14/host_group_types"
-        self._host = host
-        self._json_file = json_file
-        self._access_code = code
+        self.api_url = "/api/profiler/1.14/host_group_types"
+        self.host = host
+        self.json_file = json_file
+        self.access_code = code
 
     def get_hostgroup_name(self):
-        with open(self._json_file) as f:
+        with open(self.json_file) as f:
             data = json.load(f)
         return data['name']
 
     def get_hostgroup_id(self,netprofiler,hostgroup_name):
-        content_dict = netprofiler.conn.json_request("GET",self._api_url)
+        content_dict = netprofiler.conn.json_request("GET",self.api_url)
         for elem in content_dict:
             for key, value in elem.items():
                 if value == hostgroup_name:
@@ -75,7 +75,7 @@ class NetprofilerCLIApp(Application):
     def main(self,module):
 
         try:
-            netprofiler = Service("netprofiler",self._host, auth=OAuth(self.access_code),
+            netprofiler = Service("netprofiler",self.host, auth=OAuth(self.access_code),
                                   enable_auth_detection = False,
                                   supports_auth_basic=True,
                                   supports_auth_oauth=True,
@@ -83,9 +83,9 @@ class NetprofilerCLIApp(Application):
 
             hostgroup_id = self.get_hostgroup_id(netprofiler,self.get_hostgroup_name())
 
-            contents = open(self._json_file, 'rb').read()
+            contents = open(self.json_file, 'rb').read()
 
-            content_dict = netprofiler.conn.upload(self._api_url+'/'+str(hostgroup_id), contents, method="PUT", extra_headers={'Content-Type': 'application/json'})
+            content_dict = netprofiler.conn.upload(self.api_url+'/'+str(hostgroup_id), contents, method="PUT", extra_headers={'Content-Type': 'application/json'})
 
             del netprofiler
             if content_dict is None:
