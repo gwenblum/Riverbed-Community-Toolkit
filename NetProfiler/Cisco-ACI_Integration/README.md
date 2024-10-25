@@ -86,7 +86,7 @@ The image of `rctc-acitoolkit` contains a slightly modified version of the origi
 The following command connects to the running `rctc-acitoolkit` container to execute the Python script that gets the endpoint information and writes it in to the MySQL database:
 
 ```shell
-docker exec -it rctc-acitoolkit python acitoolkit/applications/endpointtracker/aci-endpoint-tracker.py -o
+docker exec rctc-acitoolkit python acitoolkit/applications/endpointtracker/aci-endpoint-tracker.py -o
 ```
 
 ### Step 3. From rctc-steelscript-ansible container, check the DB is reachable and populated
@@ -94,7 +94,7 @@ docker exec -it rctc-acitoolkit python acitoolkit/applications/endpointtracker/a
 The following command will connect to the `rctc-steelscript-ansible` container and run a SQL statement to verify that the database exists and is now populated:
 
 ```shell
-docker exec -it rctc-steelscript-ansible mysql -u root -ppassword -h mysql endpointtracker -e 'select * from endpoints limit 10;'
+docker exec rctc-steelscript-ansible mysql -u root -ppassword -h mysql endpointtracker -e 'select * from endpoints limit 10;'
 ```
 
 ### Step 4. Configure the connector to Riverbed NetProfiler and/or AppResponse, and apply
