@@ -76,7 +76,7 @@ ed4a3638af4c   mysql:8.0                  "docker-entrypoint.s…"   13 minutes 
 When started, the 3 containers will run indefinitely, until you stop them. To stop, run the following:
 
 ```shell
-docker compose down -d
+docker compose down
 ```
 
 ### Step 2. From rctc-acitoolkit, store the endpoints information to the database
