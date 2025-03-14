@@ -1,0 +1,94 @@
+{
+    "cmdb": [
+        {
+            "site": "Headquarters",
+            "deviceName": "Router",
+            "status": "Online",
+            "deviceid": "HQ001"
+        },
+        {
+            "site": "Headquarters",
+            "deviceName": "Switch",
+            "status": "Online",
+            "deviceid": "HQ002"
+        },
+        {
+            "site": "Headquarters",
+            "deviceName": "Firewall",
+            "status": "Offline",
+            "deviceid": "HQ003"
+        },
+        {
+            "site": "Headquarters",
+            "deviceName": "Access Point",
+            "status": "Online",
+            "deviceid": "HQ004"
+        },
+        {
+            "site": "Headquarters",
+            "deviceName": "Server",
+            "status": "Maintenance",
+            "deviceid": "HQ005"
+        },
+        {
+            "site": "Branch Office",
+            "deviceName": "Router",
+            "status": "Online",
+            "deviceid": "BO001"
+        },
+        {
+            "site": "Branch Office",
+            "deviceName": "Switch",
+            "status": "Offline",
+            "deviceid": "BO002"
+        },
+        {
+            "site": "Branch Office",
+            "deviceName": "Access Point",
+            "status": "Online",
+            "deviceid": "BO003"
+        },
+        {
+            "site": "Branch Office",
+            "deviceName": "Printer",
+            "status": "Online",
+            "deviceid": "BO004"
+        },
+        {
+            "site": "Branch Office",
+            "deviceName": "Camera",
+            "status": "Offline",
+            "deviceid": "BO005"
+        },
+        {
+            "site": "Data Center",
+            "deviceName": "Server",
+            "status": "Online",
+            "deviceid": "DC001"
+        },
+        {
+            "site": "Data Center",
+            "deviceName": "Switch",
+            "status": "Online",
+            "deviceid": "DC002"
+        },
+        {
+            "site": "Data Center",
+            "deviceName": "Firewall",
+            "status": "Maintenance",
+            "deviceid": "DC003"
+        },
+        {
+            "site": "Data Center",
+            "deviceName": "Load Balancer",
+            "status": "Online",
+            "deviceid": "DC004"
+        },
+        {
+            "site": "Data Center",
+            "deviceName": "Storage Array",
+            "status": "Online",
+            "deviceid": "DC005"
+        }
+    ]
+}
