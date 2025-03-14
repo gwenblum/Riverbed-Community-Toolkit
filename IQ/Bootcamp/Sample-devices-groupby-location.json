@@ -1,0 +1,94 @@
+{
+  "locations": [
+    {
+      "locationName": "Headquarters",
+      "devices": [
+        {
+          "deviceId": "HQ001",
+          "deviceName": "Router",
+          "status": "Online"
+        },
+        {
+          "deviceId": "HQ002",
+          "deviceName": "Switch",
+          "status": "Online"
+        },
+        {
+          "deviceId": "HQ003",
+          "deviceName": "Firewall",
+          "status": "Offline"
+        },
+        {
+          "deviceId": "HQ004",
+          "deviceName": "Access Point",
+          "status": "Online"
+        },
+        {
+          "deviceId": "HQ005",
+          "deviceName": "Server",
+          "status": "Maintenance"
+        }
+      ]
+    },
+    {
+      "locationName": "Branch Office",
+      "devices": [
+        {
+          "deviceId": "BO001",
+          "deviceName": "Router",
+          "status": "Online"
+        },
+        {
+          "deviceId": "BO002",
+          "deviceName": "Switch",
+          "status": "Offline"
+        },
+        {
+          "deviceId": "BO003",
+          "deviceName": "Access Point",
+          "status": "Online"
+        },
+        {
+          "deviceId": "BO004",
+          "deviceName": "Printer",
+          "status": "Online"
+        },
+        {
+          "deviceId": "BO005",
+          "deviceName": "Camera",
+          "status": "Offline"
+        }
+      ]
+    },
+    {
+      "locationName": "Data Center",
+      "devices": [
+        {
+          "deviceId": "DC001",
+          "deviceName": "Server",
+          "status": "Online"
+        },
+        {
+          "deviceId": "DC002",
+          "deviceName": "Switch",
+          "status": "Online"
+        },
+        {
+          "deviceId": "DC003",
+          "deviceName": "Firewall",
+          "status": "Maintenance"
+        },
+        {
+          "deviceId": "DC004",
+          "deviceName": "Load Balancer",
+          "status": "Online"
+        },
+        {
+          "deviceId": "DC005",
+          "deviceName": "Storage Array",
+          "status": "Online"
+        }
+      ]
+    }
+  ]
+}
