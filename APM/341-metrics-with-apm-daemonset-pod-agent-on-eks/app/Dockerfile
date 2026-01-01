@@ -1,10 +1,10 @@
 # Dockerfile 
-# version: 23.8.230921
+# version: 26.1
 # Riverbed - Riverbed-Community-Toolkit (https://github.com/riverbed/Riverbed-Community-Toolkit)
 #
 # Containerize the Python app of cookbook 341
 
-FROM python
+FROM python:3.14-slim
 RUN pip3 install urllib3
 WORKDIR /app
 
@@ -17,3 +17,4 @@ ENV COOKBOOK_DIMENSION_REGION="local"
 ENV COOKBOOK_TAG_TIER="small"
 
 CMD python3 app.py
+
